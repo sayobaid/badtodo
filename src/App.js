@@ -8,16 +8,22 @@ import AddTodo from './MyComponents/AddTodo';
 
 
 function App() {
-  const [todosList,setTodosList]=useState([
-  ]);
+  let initTodo=[]
+  if(localStorage.getItem("badtodos")!=null)
+  {
+    initTodo=JSON.parse(localStorage.getItem("badtodos"))
+  }
+
+  const [todosList,setTodosList]=useState(initTodo);
   const onDelete=(todo)=> {
   
     console.log(todo.title +" Deleted");
-    //let index=todosList.indexOf(todo);
-    //todosList.splice(index,1);
-    setTodosList(todosList.filter((e)=>{
+    let newTodos=todosList.filter((e)=>{
     return e!==todo
-  }));
+  });
+
+  setTodosList(newTodos)
+  localStorage.setItem("badtodos",JSON.stringify(newTodos))
   }
   const onAdd=(title,desc)=>{
     console.log(title+" Added");
@@ -28,18 +34,16 @@ function App() {
       desc: desc,
       complete:false
     }
-    var newTodos=todosList.filter((e)=>{
-      return e==e
-    });
-    newTodos.push(newTodo)
+    var newTodos=[...todosList,newTodo]
     setTodosList(newTodos)
+    localStorage.setItem("badtodos",JSON.stringify(newTodos))
   }
 
 
 
   return (
     <>
-      <Header title="BadTodo" searchbar={true} logo={logo} />
+      <Header title="BadTodos" searchbar={false} logo={logo} />
       <AddTodo addTodo={onAdd}/>
       <Todos todos={todosList} onDelete={onDelete}/>
      
